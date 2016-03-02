@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 消息生产者
+        ProducerId ，该id似乎不受代码控制，研究中
+    -->
+    <bean name="producer" class="com.mobanker.tkj.cs.ons.factory.ProducerFactoryBean">
+        <property name="configProperties">
+            <map>
+                <entry key="ProducerId" value="PID_mob_producer_ons" />
+                <entry key="AccessKey" value="${mns.accesskeyid}"/>
+                <entry key="SecretKey" value="${mns.accesskeysecret}" />
+            </map>
+        </property>
+    </bean>
+
+    <!-- 消费者
+        ConsumerId必须与aliyun控制台指定的相匹配，方可连接查看状态等信息
+        subExpression 研究中
+        配置自定义messageListener，用于监听并消费消息
+    -->
+    <bean name="consumer" class="com.mobanker.tkj.cs.ons.factory.ConsumerFactoryBean" >
+        <property name="topicName" value="TopicMobanker"/>
+        <property name="subExpression" value="*" />
+        <property name="messageListener" ref="mobMessageListener"/>
+        <constructor-arg name="configProperties">
+            <map>
+                <entry key="ConsumerId" value="CID_mob_consumer_ons" />
+                <entry key="AccessKey" value="${mns.accesskeyid}"/>
+                <entry key="SecretKey" value="${mns.accesskeysecret}" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <!-- 自定义消息监听者 -->
+    <bean name="mobMessageListener" class="com.mobanker.tkj.cs.ons.messageListener.MobMessageListener"></bean>
+
+    <!-- 消息体 ，指定 topic,tag,key,其中消息体，需要将该bean注入，调用setBody() 方法-->
+    <bean name="TopicMobanker" class="com.aliyun.openservices.ons.api.Message">
+        <constructor-arg index="0" value="TopicMobanker" />
+        <constructor-arg index="1" value="tagMob" />
+        <constructor-arg index="2" value="mobMnsKey" />
+        <constructor-arg index="3" value="" />
+    </bean>
+</beans>

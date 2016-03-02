@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="account" class="com.aliyun.mns.client.CloudAccount" >
+		<constructor-arg index="0" value="${mns.accesskeyid}"></constructor-arg>
+		<constructor-arg index="1" value="${mns.accesskeysecret}"></constructor-arg>
+		<constructor-arg index="2" value="${mns.accountendpoint}"></constructor-arg>
+	</bean>
+	<bean id="client" class="com.mobanker.tkj.cs.mns.factory.MNSClientFactoryBean" destroy-method="clear" >
+		<constructor-arg index="0" ref="account"></constructor-arg>
+	</bean>
+
+	<bean id="httpEndPointCommon" class="com.mobanker.tkj.cs.mns.mqService.HttpEndpointCommon"
+			destroy-method="stop">
+		<constructor-arg index="0" value="11223"></constructor-arg>
+	</bean>
+
+	<!-- 定义队列元数据，默认maxMessageSize 为65536
+		delaySeconds(0L); //发送到该Queue所有消息的延迟可见时间，单位为秒
+		maxMessageSize(65530L); //消息体的最大长度，单位为byte
+		messageRetentionPeriod(345600L); //消息的最长存活时间，单位为秒
+		visibilityTimeout(30L); //消息取出后维持不可见状态的时间，单位为秒
+		pollingWaitseconds(0);//长轮询等待时间，单位为秒，默认为0
+	-->
+	<!-- 1 -->
+	<bean id="sendPollQueueMeta" class="com.aliyun.mns.model.QueueMeta">
+		<property name="queueName" value="sendPollQueue"></property>
+	</bean>
+	<bean id="sendPollQueue" class="com.mobanker.tkj.cs.mns.factory.CloudQueueFactoryBean" >
+		<property name="queueMeta" ref="sendPollQueueMeta"></property>
+	</bean>
+
+	<!--<bean id="mobankerQueueMeta" class="com.aliyun.mns.model.QueueMeta">-->
+		<!--<property name="queueName" value="mobankerQueue"></property>-->
+	<!--</bean>-->
+	<!--<bean id="mobankerQueue" class="com.mobanker.tkj.cs.mns.factory.CloudQueueFactoryBean" >-->
+		<!--<property name="queueMeta" ref="mobankerQueueMeta"></property>-->
+	<!--</bean>-->
+
+	<bean id="sendPollTopicMeta" class="com.aliyun.mns.model.TopicMeta">
+		<property name="topicName" value="sendPollTopic"></property>
+	</bean>
+	<bean id="sendPollTopic" class="com.mobanker.tkj.cs.mns.factory.CloudTopicFactoryBean" >
+		<property name="topicMeta" ref="sendPollTopicMeta"></property>
+	</bean>
+</beans>

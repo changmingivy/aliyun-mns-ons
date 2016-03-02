@@ -1,0 +1,244 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.mobanker.mns</groupId>
+    <artifactId>mobanker-mns-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>com.mobanker.mns</groupId>
+  <artifactId>mobanker-mns</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>mobaner-mns Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+
+    <dependency>
+      <groupId>com.mobanker.common</groupId>
+      <artifactId>mobanker-core</artifactId>
+      <version>1.0.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-spring</artifactId>
+      <version>4.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>javax.servlet.jsp-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mobanker.common</groupId>
+      <artifactId>mobanker-common-secret</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- mns-->
+    <dependency>
+      <groupId>com.aliyun.mns</groupId>
+      <artifactId>aliyun-sdk-mns</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.4.1</version>
+    </dependency>
+
+    <!--ons-->
+    <dependency>
+      <groupId>com.aliyun.openservices</groupId>
+      <artifactId>ons-client</artifactId>
+      <version>1.1.11</version>
+    </dependency>
+
+
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>mns</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.mybatis.generator</groupId>
+        <artifactId>mybatis-generator-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>${project.build.finalName}</warName>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>localhost</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <database.driverClassName>com.mysql.jdbc.Driver</database.driverClassName>
+        <database.url><![CDATA[jdbc:mysql://127.0.0.1:3306/customer?useUnicode=true&characterEncoding=UTF-8]]></database.url>
+        <!--<database.url><![CDATA[jdbc:mysql://192.168.1.27:3306/cs?useUnicode=true&characterEncoding=UTF-8]]></database.url> -->
+        <database.user>root</database.user>
+        <database.password>sa</database.password>
+        <system.check.permission>true</system.check.permission>
+        <system.timeout>1800</system.timeout>
+        <activitemq.sendURL.host>failover://(tcp://192.168.1.123:7777)</activitemq.sendURL.host>
+        <activitemq.receiveURL.host>failover://(tcp://192.168.1.123:7777)</activitemq.receiveURL.host>
+        <!-- redis config -->
+        <redis.host.cfg>192.168.1.147</redis.host.cfg>
+        <redis.port.cfg>6379</redis.port.cfg>
+        <redis.pool.maxTotal.cfg>100</redis.pool.maxTotal.cfg>
+        <redis.pool.maxIdle.cfg>10</redis.pool.maxIdle.cfg>
+        <redis.expire.cfg>300</redis.expire.cfg>
+        <redis.timeout.cfg>3000</redis.timeout.cfg>
+        <redis.password.cfg>redis147</redis.password.cfg>
+        <redis.db.cfg>2</redis.db.cfg>
+
+        <!-- mongodb config -->
+        <mongodb.host>192.168.1.202</mongodb.host>
+        <mongodb.hostport>27017</mongodb.hostport>
+        <mongodb.dbName>mobp2p</mongodb.dbName>
+
+        <mobanker.test>false</mobanker.test>
+      </properties>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <database.driverClassName>com.mysql.jdbc.Driver</database.driverClassName>
+        <database.url><![CDATA[jdbc:mysql://192.168.1.214:3306/customer?useUnicode=true&characterEncoding=UTF-8]]></database.url>
+        <database.user>root</database.user>
+        <database.password>chengce214</database.password>
+        <system.check.permission>true</system.check.permission>
+        <system.timeout>1800</system.timeout>
+        <activitemq.sendURL.host>failover://(tcp://192.168.1.123:7777)</activitemq.sendURL.host>
+        <activitemq.receiveURL.host>failover://(tcp://192.168.1.123:7777)</activitemq.receiveURL.host>
+        <!-- redis config -->
+        <redis.host.cfg>192.168.1.214</redis.host.cfg>
+        <redis.port.cfg>6379</redis.port.cfg>
+        <redis.pool.maxTotal.cfg>100</redis.pool.maxTotal.cfg>
+        <redis.pool.maxIdle.cfg>10</redis.pool.maxIdle.cfg>
+        <redis.expire.cfg>300</redis.expire.cfg>
+        <redis.timeout.cfg>3000</redis.timeout.cfg>
+        <redis.password.cfg>redis214</redis.password.cfg>
+        <redis.db.cfg>2</redis.db.cfg>
+
+        <!-- mongodb config -->
+        <mongodb.host>192.168.1.202</mongodb.host>
+        <mongodb.hostport>27017</mongodb.hostport>
+        <mongodb.dbName>mobp2p</mongodb.dbName>
+
+        <!--测试模式 -->
+        <mobanker.test>false</mobanker.test>
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <database.driverClassName>com.mysql.jdbc.Driver</database.driverClassName>
+        <database.url><![CDATA[jdbc:mysql://192.168.1.147:3306/customer?useUnicode=true&characterEncoding=UTF-8]]></database.url>
+        <database.user>root</database.user>
+        <database.password>chengce147</database.password>
+        <system.check.permission>true</system.check.permission>
+        <system.timeout>1800</system.timeout>
+        <activitemq.sendURL.host>failover://(tcp://192.168.1.237:61616)</activitemq.sendURL.host>
+        <activitemq.receiveURL.host>failover://(tcp://192.168.1.237:61616)</activitemq.receiveURL.host>
+
+        <!-- redis config -->
+        <redis.host.cfg>192.168.1.147</redis.host.cfg>
+        <redis.port.cfg>6379</redis.port.cfg>
+        <redis.pool.maxTotal.cfg>100</redis.pool.maxTotal.cfg>
+        <redis.pool.maxIdle.cfg>10</redis.pool.maxIdle.cfg>
+        <redis.expire.cfg>300</redis.expire.cfg>
+        <redis.timeout.cfg>3000</redis.timeout.cfg>
+        <redis.password.cfg>redis147</redis.password.cfg>
+        <redis.db.cfg>2</redis.db.cfg>
+
+        <!-- mongodb config -->
+        <mongodb.host>192.168.1.202</mongodb.host>
+        <mongodb.hostport>27017</mongodb.hostport>
+        <mongodb.dbName>mobp2p</mongodb.dbName>
+
+        <!--测试模式 -->
+        <mobanker.test>true</mobanker.test>
+      </properties>
+    </profile>
+  </profiles>
+</project>

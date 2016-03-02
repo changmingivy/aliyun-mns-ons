@@ -1,0 +1,12 @@
+.classpath
+.project
+.settings/
+target/
+src/main/webapp/WEB-INF/classes/
+src/main/webapp/WEB-INF/lib/
+/bin
+/tkj_api_cw.iml
+.idea
+financial.iml
+*.iml
+catalina.home_IS_UNDEFINED
